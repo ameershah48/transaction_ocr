@@ -30,10 +30,10 @@ app.post('/api/getTransactions', (req, res) => {
         res.send(transactions)
       })
       .catch((error) => {
-        throw error
+        console.log(error.message)
       })
   } catch (error) {
-    console.log(error)
+    console.log(error.message)
   }
 })
 
