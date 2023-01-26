@@ -1,17 +1,16 @@
-const file = process.argv[2];
 const tesseract = require("node-tesseract-ocr")
-const mae = require("./engine/mae")
+const config = { lang: "eng", oem: 1, psm: 3}
 
-const config = {
-  lang: "eng",
-  oem: 1,
-  psm: 3,
-}
+const paramFile = process.argv[2];
+const paramEngine = process.argv[3];
 
 tesseract
-  .recognize("receipts/" + file, config)
+  .recognize("screenshots/" + paramFile, config)
   .then((text) => {
-    const transactions = mae.getTransactions(text)
+    
+    const engine = require("./engine/" + paramEngine)
+    const transactions = engine.getTransactions(text)
+
     console.table(transactions)
   })
   .catch((error) => {
