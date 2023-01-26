@@ -17,9 +17,19 @@ function getTransactions(text){
     let names = lines.slice(count, count * 2);
     let values = lines.slice(count * 2, count * 3);
 
+    values = values.map((value) => {
+        value = value
+            .replace("RM", "")
+            .replace(" ", "")
+            .replace(" ", "")
+            .trim();
+
+        return parseFloat(value);
+    });
+
     return dates.map((date, index) => {
         return {
-            date: date,
+            date: Date.parse(date),
             name: names[index],
             value: values[index],
         };

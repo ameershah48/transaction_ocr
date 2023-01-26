@@ -155,7 +155,17 @@ function getTransactionDate(text) {
 function getTransactions(text) {
     const dates = getTransactionDate(text);
     const transactions = getGroupTransactionName(text);
-    const values = getTransactionValue(text);
+    let values = getTransactionValue(text);
+
+    values = values.map((value) => {
+        value = value
+            .replace("RM", "")
+            .replace(" ", "")
+            .replace(" ", "")
+            .trim();
+
+        return parseFloat(value);
+    });
 
     //combine dates and transactions
     const combined1 = dates.map((date, i) => {
@@ -196,7 +206,7 @@ function getTransactions(text) {
 
     flattenedTransactions2 = flattenedTransactions2.map((item, i) => {
         return {
-            date: item.date,
+            date: Date.parse(item.date),
             name: item.name,
             value: item.value
         };
