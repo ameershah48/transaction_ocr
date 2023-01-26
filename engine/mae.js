@@ -53,21 +53,34 @@ function getTransactionValue(text) {
 function getGroupTransactionName(text) {
     const lines = text.split(/\r?\n/);
 
+    //split by empty line
+    let splitByEmptyLine = lines.reduce((acc, line) => {
+        if (line === "") {
+            acc.push([]);
+        } else {
+            acc[acc.length - 1].push(line);
+        }
+        return acc;
+    }, [[]]);
+
+    //flatten array
+    splitByEmptyLine = splitByEmptyLine.map((line) => line.join(" "));
+    
     //remove empty lines
-    const filteredLines = lines.filter(function (el) {
+    splitByEmptyLine = splitByEmptyLine.filter(function (el) {
         return el != "";
     });
 
     //find today index
-    const startIndex = filteredLines.findIndex((line) => {
+    const startIndex = splitByEmptyLine.findIndex((line) => {
         return line.includes("Transaction History");
     });
 
     //remove index 0 to today index
-    filteredLines.splice(0, startIndex + 1);
+    splitByEmptyLine.splice(0, startIndex + 1);
 
     //find all index of seperator word in array
-    const seperatorIndex = filteredLines.map((line, index) => {
+    const seperatorIndex = splitByEmptyLine.map((line, index) => {
         //remove number
         line = line.replace(/\d/g, '').trim();
 
@@ -82,23 +95,23 @@ function getGroupTransactionName(text) {
     });
 
     //count lines that contain the word "RM" and "-RM" is the first word in the line
-    const count = filteredLines.filter((line) => {
+    const count = splitByEmptyLine.filter((line) => {
         return line.includes("RM") && line.indexOf("RM") === 0;
     }).length;
 
-    const count2 = filteredLines.filter((line) => {
+    const count2 = splitByEmptyLine.filter((line) => {
         return line.includes("-RM") && line.indexOf("-RM") === 0;
     }).length;
 
     //remove 6 elements from last index of filteredLines
-    filteredLines.splice(filteredLines.length - (count + count2), count + count2);
+    splitByEmptyLine.splice(splitByEmptyLine.length - (count + count2), count + count2);
 
     //iterate through filteredSeperatorIndex, group lines by seperator word
     const groupedLines = filteredSeperatorIndex.map((index, i) => {
         if (i === filteredSeperatorIndex.length - 1) {
-            return filteredLines.slice(index + 1, filteredLines.length);
+            return splitByEmptyLine.slice(index + 1, splitByEmptyLine.length);
         } else {
-            return filteredLines.slice(index + 1, filteredSeperatorIndex[i + 1]);
+            return splitByEmptyLine.slice(index + 1, filteredSeperatorIndex[i + 1]);
         }
     });
 

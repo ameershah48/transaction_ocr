@@ -11,9 +11,8 @@ const config = {
 tesseract
   .recognize("receipts/" + file, config)
   .then((text) => {
-    // const transactions = mae.getTransactions(text)
-    // console.table(transactions)
-    console.log(text)
+    const transactions = mae.getTransactions(text)
+    console.table(transactions)
   })
   .catch((error) => {
     console.log(error.message)
