@@ -15,14 +15,14 @@
 <body class="container">
     <form class="form-wrapper my-4" enctype="multipart/form-data" id="form">
         <div class="form-group">
-            <label for="img">Image</label>
-            <input type="file" class="form-control-file" id="base64" aria-describedby="emailHelp"
+            <b>Please choose image or paste image</b>
+            <input type="file" class="form-control-file m-2" id="base64" aria-describedby="emailHelp"
                 placeholder="Enter email">
-            <small id="base64" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            <small id="base64" class="form-text text-muted">We'll never store the image.</small>
         </div>
 
         <div class="form-group">
-            <label for="engine">Source</label>
+            <b>Select Source</b>
             <select name="engine" id="engine" class="form-control">
                 <option value="mae">Maybank (MAE)</option>
                 <option value="m2u">Maybank (M2U)</option>
@@ -54,11 +54,37 @@
 <script>
     let form = document.querySelector('form');
 
+    function getFileFromPasteEvent(event) {
+        const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+        for (let index in items) {
+            const item = items[index];
+            if (item.kind === 'file') {
+                return item.getAsFile();
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.onpaste = function (event) {
+            const fileInput = document.querySelector('input[type="file"]');
+            const file = getFileFromPasteEvent(event);
+            const dataTransfer = new DataTransfer();
+
+            if (!file) { return; }
+
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+        }
+    });
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
+        let tbody = document.querySelector('tbody');
         let file = document.querySelector('input[type=file]').files[0];
         let reader = new FileReader();
+
+        tbody.innerHTML = '';
 
         reader.readAsDataURL(file);
 
@@ -67,12 +93,12 @@
             let base64 = reader.result;
             let host = window.location.host;
 
-            if (host.indexOf('http') === -1) {
-                host = 'http://' + host;
-            }
-
             if (host.indexOf('https') === -1) {
                 host = host.replace('http', 'https');
+            }
+
+            if (host.indexOf('http') === -1) {
+                host = 'http://' + host;
             }
 
             fetch(host + '/api/getTransactions', {
@@ -85,9 +111,6 @@
                     engine
                 })
             }).then(res => res.json()).then(data => {
-
-                let table = document.querySelector('table');
-                let tbody = table.querySelector('tbody');
 
                 data.forEach((item) => {
                     let tr = document.createElement('tr');
