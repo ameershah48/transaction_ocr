@@ -11,10 +11,6 @@ app.get('/', (req, res) => {
   res.send('OCR Transaction.')
 })
 
-app.post('/test', (req, res) => {
-  res.send('Works.')
-})
-
 app.post('/api/getTransactions', (req, res) => {
 
   try {
