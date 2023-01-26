@@ -36,6 +36,8 @@ app.post('/api/getTransactions', (req, res) => {
         const ocr = require("./engine/" + engine)
         const transactions = ocr.getTransactions(text)
 
+        console.log('Transactions: ', transactions)
+
         res.send(transactions)
       })
       .catch((error) => {
