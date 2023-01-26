@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Transaction OCR</title>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+
+</head>
+
+<body class="container">
+    <form class="form-wrapper my-4" enctype="multipart/form-data" id="form">
+        <div class="form-group">
+            <label for="img">Image</label>
+            <input type="file" class="form-control-file" id="base64" aria-describedby="emailHelp"
+                placeholder="Enter email">
+            <small id="base64" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="engine">Source</label>
+            <select name="engine" id="engine" class="form-control">
+                <option value="mae">Maybank (MAE)</option>
+                <option value="m2u">Maybank (M2U)</option>
+            </select>
+            <small id="img" class="form-text text-muted">
+                Please select screenshot source
+            </small>
+        </div>
+        <button type="submit" class="btn btn-primary">Scan</button>
+    </form>
+
+    <table class="table">
+        <thead>
+            <th>
+                Date
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Value
+            </th>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</body>
+
+<script>
+    let form = document.querySelector('form');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        let file = document.querySelector('input[type=file]').files[0];
+        let reader = new FileReader();
+
+        reader.readAsDataURL(file);
+
+        reader.onload = function () {
+            let engine = document.querySelector('#engine').value;
+            let base64 = reader.result;
+            let host = window.location.host;
+
+            if (host.indexOf('http') === -1) {
+                host = 'http://' + host;
+            }
+
+            fetch(host + '/api/getTransactions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    base64,
+                    engine
+                })
+            }).then(res => res.json()).then(data => {
+
+                let table = document.querySelector('table');
+                let tbody = table.querySelector('tbody');
+
+                data.forEach((item) => {
+                    let tr = document.createElement('tr');
+                    let tdDate = document.createElement('td');
+                    let tdName = document.createElement('td');
+                    let tdValue = document.createElement('td');
+                    let date = new Date(item.date);
+
+                    tdDate.innerHTML = date.toLocaleDateString();
+                    tdName.innerHTML = item.name;
+                    tdValue.innerHTML = item.value;
+
+                    tr.appendChild(tdDate);
+                    tr.appendChild(tdName);
+                    tr.appendChild(tdValue);
+
+                    tbody.appendChild(tr);
+                })
+            })
+        };
+    })
+</script>
+
+</html>
