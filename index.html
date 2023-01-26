@@ -102,7 +102,7 @@
                     base64,
                     engine
                 })
-                
+
             }).then(res => res.json()).then(data => {
 
                 if (data.length > 0) {
@@ -123,6 +123,8 @@
 
                         tbody.appendChild(tr);
                     })
+                } else {
+                    alert('No transaction found, please try again.')
                 }
             })
         };
