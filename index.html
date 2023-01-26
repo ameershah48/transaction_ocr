@@ -91,21 +91,13 @@
         reader.onload = function () {
             let engine = document.querySelector('#engine').value;
             let base64 = reader.result;
-            let host = window.location.host;
 
-            if (host.indexOf('https') === -1) {
-                host = host.replace('http', 'https');
-            }
-
-            if (host.indexOf('http') === -1) {
-                host = 'http://' + host;
-            }
-
-            fetch(host + '/api/getTransactions', {
+            fetch('https://ocr.mently.my/api/getTransactions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                
                 body: JSON.stringify({
                     base64,
                     engine
