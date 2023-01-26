@@ -68,7 +68,11 @@
             let host = window.location.host;
 
             if (host.indexOf('http') === -1) {
-                host = 'https://' + host;
+                host = 'http://' + host;
+            }
+
+            if (host.indexOf('https') === -1) {
+                host = host.replace('http', 'https');
             }
 
             fetch(host + '/api/getTransactions', {
