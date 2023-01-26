@@ -113,9 +113,9 @@
                         let tdValue = document.createElement('td');
                         let date = new Date(item.date);
 
-                        tdDate.innerHTML = date.toLocaleDateString();
-                        tdName.innerHTML = item.name;
-                        tdValue.innerHTML = item.value;
+                        tdDate.innerHTML = "<input value='" + date.toLocaleDateString() + "' class='form-control'>";
+                        tdName.innerHTML = "<input value='" + item.name + "' class='form-control'>";
+                        tdValue.innerHTML = "<input value='" + item.value + "' class='form-control'>";
 
                         tr.appendChild(tdDate);
                         tr.appendChild(tdName);
