@@ -14,7 +14,7 @@ function getTransactionValue(text) {
 
     //find today index
     const startIndex = filteredLines.findIndex((line) => {
-        return line.includes("Transaction History");
+        return line.includes("Transaction History") || line.includes("Debit Card History") || line.includes("M2U History");
     });
 
     //remove index 0 to today index
