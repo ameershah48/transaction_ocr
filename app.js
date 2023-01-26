@@ -2,21 +2,22 @@ const tesseract = require("node-tesseract-ocr")
 const config = { lang: "eng", oem: 1, psm: 3 }
 
 const express = require('express')
-const fileUpload = require('express-fileupload');
-
 const app = express()
 const port = 3010
 
-app.use(fileUpload());
 app.use(express.json());
 
-app.post('/', (req, res) => {
+app.get('/', (req, res) => {
+  res.send('OCR Transaction.')
+})
+
+app.post('/api/getTransactions', (req, res) => {
 
   try {
     const base64 = req.body.base64;
-    const base64Data = base64.replace(/^data:image\/png;base64,/, "");
-
     const engine = req.body.engine;
+
+    const base64Data = base64.replace(/^data:image\/png;base64,/, "");
     const buffer = Buffer.from(base64Data, 'base64');
 
     tesseract
