@@ -41,15 +41,14 @@ app.post('/api/getTransactions', (req, res) => {
         res.send(transactions)
       })
       .catch((error) => {
-
-        console.log('Error: ', error.message)
+        console.log(error)
 
         res.send({
           error: error.message
         })
       })
   } catch (error) {
-    console.log('Error: ', error.message)
+    console.log(error)
 
     res.send({
       error: error.message
