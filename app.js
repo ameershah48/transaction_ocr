@@ -13,11 +13,12 @@ app.use(express.json());
 app.post('/', (req, res) => {
 
   try {
-    const { image } = req.files;
+    const base64 = req.body.base64;
     const engine = req.body.engine;
+    const buffer = Buffer.from(base64, 'base64');
 
     tesseract
-      .recognize(image.data, config)
+      .recognize(buffer, config)
       .then((text) => {
 
         const ocr = require("./engine/" + engine)
